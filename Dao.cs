@@ -11,7 +11,7 @@ namespace Quiz
     {
         private static readonly string SELECT_ALL = "SELECT * FROM `answer_question`";
         private static readonly string COUNT_ALL = "SELECT COUNT(*) FROM `answer_question`";
-        private static readonly string INSERT_NEW_QUESTION_ANSWER = "INSERT INTO `answer_question` (`id`, `question`, `answer`) VALUES (NULL, '{0}', '{1}')";
+        private static readonly string INSERT_NEW_QUESTION_ANSWER = "INSERT INTO `answer_question` (`id`, `question`, `answer`) VALUES (NULL, ?question , ?answer)";
         private static readonly string CREATE_RELEVANT_TABLES = @"
                 CREATE TABLE IF NOT EXISTS `answer_question`(
                 id INT NOT NULL AUTO_INCREMENT,
@@ -77,7 +77,11 @@ namespace Quiz
 
             try
             {
-                GetMySqlCommand(string.Format(INSERT_NEW_QUESTION_ANSWER, newQuestionAnswerModel.Question, newQuestionAnswerModel.Answer), conn).ExecuteNonQuery();
+                MySqlCommand comm = conn.CreateCommand();
+                comm.CommandText = INSERT_NEW_QUESTION_ANSWER;
+                comm.Parameters.AddWithValue("?question", newQuestionAnswerModel.Question);
+                comm.Parameters.AddWithValue("?answer", newQuestionAnswerModel.Answer);
+                comm.ExecuteNonQuery();
             }
             catch (Exception ex)
             {
