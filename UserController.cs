@@ -8,6 +8,23 @@ namespace Quiz
 {
     internal class UserController
     {
-        public UserModel SelectUserByLogin(UserModel currentUserModel)
+        private UserDao uDao;
+        public UserController() { uDao = new(); }
+        public UserModel ContSelectUserByLogin(UserModel currentUserModel) => uDao.SelectUserByLogin(currentUserModel);
+        public UserModel AddReturnNewUser(UserModel newUserModel)
+        {
+            Guid id = Guid.NewGuid();
+            newUserModel.UUID = id.ToString();
+            try
+            {
+                uDao.InsertNewUserModel(newUserModel);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return null;
+            }
+            return newUserModel;
+        }
     }
 }

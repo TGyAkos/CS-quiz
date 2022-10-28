@@ -36,13 +36,51 @@ namespace Quiz
                 }
             }
         }
-        public void Login()
+        public UserModel Login()
         {
+            UserController userController = new();
+
             WriteLine("Username: ");
             string newUserName = NoNullInput();
             WriteLine("Password: ");
             string newPassword = NoNullInput();
+
+            UserModel currentUserModel = new(newUserName, newPassword);
+
+            UserModel currentUserModelWithUUID = userController.ContSelectUserByLogin(currentUserModel);
+
+            return currentUserModelWithUUID;
+
+        }
+        public UserModel Register()
+        {
+            UserController userController = new();
+
+            WriteLine("Username: ");
+            string newUserName = NoNullInput();
+            WriteLine("Password: ");
+            string newPassword = NoNullInput();
+            WriteLine("Password Again: ");
+            string newPasswordAgain = NoNullInput();
+
+            while (newPassword != newPasswordAgain)
+            {
+                WriteLine("Password Again: ");
+                newPasswordAgain = NoNullInput();
+            }
+
             UserModel newUsermodel = new(newUserName, newPassword);
+            UserModel AddedUserModel = null;
+            try
+            {
+                AddedUserModel = userController.AddReturnNewUser(newUsermodel);
+                WriteLine("Successfully registered");
+            }
+            catch (Exception ex)
+            {
+                WriteLine(ex.ToString());
+            }
+            return AddedUserModel;
         }
         public void AddNewQuestionAnswer(UserModel currentUserModel)
         {

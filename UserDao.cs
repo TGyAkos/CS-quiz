@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Csharp_quiz
+namespace Quiz
 {
     internal class UserDao
     {
@@ -26,7 +26,6 @@ namespace Csharp_quiz
             MySqlCommand comm = conn.CreateCommand();
 
             comm.CommandText = SELECT_USER_BY_LOGIN;
-            comm.Parameters.AddWithValue("?UUID", currentUserModel.UUID);
             comm.Parameters.AddWithValue("?UserName", currentUserModel.UserName);
             comm.Parameters.AddWithValue("?Password", currentUserModel.Password);
             MySqlDataReader rdr = comm.ExecuteReader();
@@ -40,6 +39,28 @@ namespace Csharp_quiz
             rdr.Close();
             Connection.CloseConnection(conn);
             return currentUserModel;
+        }
+        public int InsertNewUserModel(UserModel newUserModel)
+        {
+            MySqlConnection conn = Connection.CreateConnection();
+            MySqlCommand comm = conn.CreateCommand();
+
+            try
+            {
+                comm.CommandText = ADD_USER;
+                comm.Parameters.AddWithValue("?UUID", newUserModel.UUID);
+                comm.Parameters.AddWithValue("?UserName", newUserModel.UserName);
+                comm.Parameters.AddWithValue("?Password", newUserModel.Password);
+                comm.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return 1;
+            }
+
+            Connection.CloseConnection(conn);
+            return 0;
         }
         public void CreateRelevantTables(MySqlConnection conn)
         {
