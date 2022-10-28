@@ -63,12 +63,12 @@ namespace Quiz
                 WrongScore(1);
             }
         }
-        public int NewQuestionAnswer(string newQuestion, string newAnswer)
+        public int NewQuestionAnswer(string newQuestion, string newAnswer, UserModel currentUserModel)
         {
             try
             {
                 QuestionAnswerModel newQuestionAnswerModel = new(newQuestion, newAnswer);
-                if (dao.InsertNewQuestionAnswer(newQuestionAnswerModel) != 0) { return 1; }
+                if (dao.InsertNewQuestionAnswer(newQuestionAnswerModel, currentUserModel) != 0) { return 1; }
                 return 0;
             }
             catch (Exception ex)

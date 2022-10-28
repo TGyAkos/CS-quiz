@@ -34,16 +34,23 @@ namespace Quiz
                     default:
                         break;
                 }
-
             }
         }
-        public void AddNewQuestionAnswer()
+        public void Login()
+        {
+            WriteLine("Username: ");
+            string newUserName = NoNullInput();
+            WriteLine("Password: ");
+            string newPassword = NoNullInput();
+            UserModel newUsermodel = new(newUserName, newPassword);
+        }
+        public void AddNewQuestionAnswer(UserModel currentUserModel)
         {
             WriteLine("Question: ");
             string newQuestion = NoNullInput();
             WriteLine("Answer: ");
             string newAnswer = NoNullInput();
-            if (cont.NewQuestionAnswer(newQuestion, newAnswer) == 0)
+            if (cont.NewQuestionAnswer(newQuestion, newAnswer, currentUserModel) == 0)
             {
                 WriteLine("Succesfully added new question");
             }

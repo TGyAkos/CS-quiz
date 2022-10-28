@@ -11,12 +11,13 @@ namespace Quiz
     {
         private static readonly string SELECT_ALL = "SELECT * FROM `answer_question`";
         private static readonly string COUNT_ALL = "SELECT COUNT(*) FROM `answer_question`";
-        private static readonly string INSERT_NEW_QUESTION_ANSWER = "INSERT INTO `answer_question` (`id`, `question`, `answer`) VALUES (NULL, ?question , ?answer)";
+        private static readonly string INSERT_NEW_QUESTION_ANSWER = "INSERT INTO `answer_question` (`id`, `question`, `answer`) VALUES (NULL, ?question , ?answer, ?UUID)";
         private static readonly string CREATE_RELEVANT_TABLES = @"
                 CREATE TABLE IF NOT EXISTS `answer_question`(
                 id INT NOT NULL AUTO_INCREMENT,
                 question VARCHAR(250) NOT NULL,
                 answer VARCHAR(50) NOT NULL,
+                uuid VARCHAR(36) NOT NULL,
                 PRIMARY KEY (id)
                 )";
 
@@ -71,7 +72,7 @@ namespace Quiz
             MySqlCommand cmd = new(SqlString, conn);
             return cmd;
         }
-        public int InsertNewQuestionAnswer(QuestionAnswerModel newQuestionAnswerModel)
+        public int InsertNewQuestionAnswer(QuestionAnswerModel newQuestionAnswerModel, UserModel currentUserModel)
         {
             MySqlConnection conn = Connection.CreateConnection();
 
@@ -81,6 +82,7 @@ namespace Quiz
                 comm.CommandText = INSERT_NEW_QUESTION_ANSWER;
                 comm.Parameters.AddWithValue("?question", newQuestionAnswerModel.Question);
                 comm.Parameters.AddWithValue("?answer", newQuestionAnswerModel.Answer);
+                comm.Parameters.AddWithValue("?uuid", currentUserModel.UUID);
                 comm.ExecuteNonQuery();
             }
             catch (Exception ex)
