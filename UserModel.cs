@@ -8,7 +8,7 @@ namespace Quiz
 {
     internal class UserModel
     {
-        public string UUID { get; set; }
+        public string ?UUID { get; }
         public string UserName { get; }
         public string Password { get; }
         internal UserModel(string userName, string password)

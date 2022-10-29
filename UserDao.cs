@@ -35,7 +35,7 @@ namespace Quiz
             {
                 rdr.GetValue(0).ToString();
                 currentUserModel.UUID = rdr.GetValue(0).ToString();
-                Console.WriteLine(currentUserModel.ToString());
+                //Console.WriteLine(currentUserModel.ToString());
             }
 
             rdr.Close();
@@ -43,7 +43,6 @@ namespace Quiz
             if (string.IsNullOrEmpty(currentUserModel.UUID)) { return null; }
             return currentUserModel;
         }
-        //Cannot differentiate between upper and lower case FIX required
         public int CheckNewUserModel(UserModel newUserModel)
         {
             MySqlConnection conn = Connection.CreateConnection();

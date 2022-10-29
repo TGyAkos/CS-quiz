@@ -61,7 +61,6 @@ namespace Quiz
                         break;
                     case 4:
                         return;
-                        //Environment.Exit(1);
                     default:
                         break;
                 }
@@ -111,11 +110,18 @@ namespace Quiz
             }
 
             UserModel newUsermodel = new(newUserName, newPassword);
-            UserModel AddedUserModel = null;
+            UserModel ?AddedUserModel = null;
             try
             {
                 AddedUserModel = userController.AddReturnNewUser(newUsermodel);
-                WriteLine("Successfully registered");
+                if (AddedUserModel != null)
+                {
+                    WriteLine("Successfully registered");
+                }
+                else
+                {
+                    WriteLine("User already exists");
+                }
             }
             catch (Exception ex)
             {
@@ -135,15 +141,15 @@ namespace Quiz
             }
             else
             {
-                WriteLine("Failed to add new question");
+                WriteLine("Failed to add new question or question already exists");
             }
         }
         //This isn't as secure as i wanted it to be, because it isn't saved who deleted it
         public void DeleteQuestionById()
         {
-            WriteLine("Question id: ");
+            WriteLine("Question: ");
             string question = StringNoNullInput();
-            if (cont.DeleteQuestionAnswerById(question) == 1) 
+            if (cont.DeleteQuestionAnswerById(question) == 0) 
             {
                 WriteLine("Succesfully deleted");
             }
@@ -180,7 +186,7 @@ namespace Quiz
         }
         public int IntNoNullInput()
         {
-            string input = ReadLine();
+            string ?input = ReadLine();
             while (string.IsNullOrEmpty(input) || !int.TryParse(input, out _))
             {
                 WriteLine("Please enter a number: ");
@@ -190,7 +196,7 @@ namespace Quiz
         }
         public string StringNoNullInput()
         {
-            string input = ReadLine();
+            string ?input = ReadLine();
             while (string.IsNullOrEmpty(input))
             {
                 WriteLine("Please enter: ");

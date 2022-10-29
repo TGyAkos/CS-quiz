@@ -15,7 +15,7 @@ namespace Quiz
             Console.WriteLine(cont.RandomQuestionAnswer());
             cont.RightScore(1);
             Console.WriteLine(cont.RightScore());*/
-            Console.WriteLine(!int.TryParse(null, out _));
+            //Console.WriteLine(!int.TryParse(null, out _));
             View vw = new();
             vw.DrawUi();
         }

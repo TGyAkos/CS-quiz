@@ -23,7 +23,8 @@ namespace Quiz
 
             try
             {
-                uDao.InsertNewUserModel(hashUserModel);
+                //THERE MUST BE A BETTER WAY THE NULLS
+                if(uDao.InsertNewUserModel(hashUserModel) == 1) { return null; }
             }
             catch (Exception ex)
             {
@@ -34,7 +35,7 @@ namespace Quiz
         }
         public string HashPassword(string password)
         {
-            //this sure is a piece of shit but i don't know how to fix it
+            //this sure is a piece of shit but i don't know how to fix it,
             SHA512 sHA512 = SHA512.Create();
             sHA512.ComputeHash(Encoding.UTF8.GetBytes(password));
             return BitConverter.ToString(sHA512.Hash).Replace("-", "");

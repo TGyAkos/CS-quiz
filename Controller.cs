@@ -22,8 +22,8 @@
         }
         public int RightScore() => scr.Right;
         public int WrongScore() => scr.Wrong;
-        public void RightScore(int Right) => scr.Right = +Right;
-        public void WrongScore(int Wrong) => scr.Wrong = +Wrong;
+        public void RightScore(int right) => scr.Right += right;
+        public void WrongScore(int wrong) => scr.Wrong += wrong;
         public int GetNumberOfQuestions() => NumberOfQuestions;
         public void SetNumberOfQuesitons(int Number) => NumberOfQuestions = Number > NumberOfQuestions ? NumberOfQuestions : Number;
         public QuestionAnswerModel RandomQuestionAnswer()
@@ -61,7 +61,7 @@
             try
             {
                 QuestionAnswerModel newQuestionAnswerModel = new(newQuestion, newAnswer);
-                if (dao.InsertNewQuestionAnswer(newQuestionAnswerModel, currentUserModel) != 0) { return 1; }
+                if (dao.InsertNewQuestionAnswer(newQuestionAnswerModel, currentUserModel) == 1) { return 1; }
                 return 0;
             }
             catch (Exception ex)
