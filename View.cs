@@ -17,7 +17,7 @@ namespace Quiz
         {
             while (true)
             {
-                string[] options = { "Play", "Add More Questions", "Exit" };
+                string[] options = { "Play", "Login", "Register", "Exit" };
                 WriteAllOptions(options);
                 WriteLine("Enter the desired number");
                 switch (NoNullInput())
@@ -26,11 +26,39 @@ namespace Quiz
                         DrawScoreAllQuestionAnswer();
                         break;
                     case "2":
-                        AddNewQuestionAnswer();
+                        AfterLoginOrRegister(Login());
                         break;
                     case "3":
+                        AfterLoginOrRegister(Register());
+                        break;
+                    case "4":
                         Environment.Exit(1);
                         break;
+                    default:
+                        break;
+                }
+            }
+        }
+        public void AfterLoginOrRegister(UserModel currentUserModel)
+        {
+            if (currentUserModel == null) { return; }
+
+            while (true) 
+            {
+                string[] options = { "Play", "Add new question", "Logout" };
+                WriteAllOptions(options);
+                WriteLine("Enter the desired number");
+                switch (NoNullInput())
+                {
+                    case "1":
+                        DrawScoreAllQuestionAnswer();
+                        break;
+                    case "2":
+                        AddNewQuestionAnswer(currentUserModel);
+                        break;
+                    case "3":
+                        return;
+                        //Environment.Exit(1);
                     default:
                         break;
                 }
@@ -47,10 +75,20 @@ namespace Quiz
 
             UserModel currentUserModel = new(newUserName, newPassword);
 
-            UserModel currentUserModelWithUUID = userController.ContSelectUserByLogin(currentUserModel);
+            return CheckLoginDetails(currentUserModel, userController);
 
-            return currentUserModelWithUUID;
-
+        }
+        public UserModel CheckLoginDetails(UserModel currentUserModel, UserController userController)
+        {
+            UserModel returnUserModel = userController.ContSelectUserByLogin(currentUserModel);
+            if (returnUserModel == null) { LoginNotFound(); return null; }
+            return returnUserModel;
+        }
+        //I don't know how to do this better
+        public void LoginNotFound()
+        {
+            // Implement remaning tries
+            WriteLine("Wrong username or password");
         }
         public UserModel Register()
         {
@@ -111,7 +149,7 @@ namespace Quiz
         }
         public void WriteSetNumberOfQuestions(Controller currentController)
         {
-            WriteLine("Number of questions");
+            WriteLine("Number of questions: " + currentController.GetNumberOfQuestions());
             currentController.SetNumberOfQuesitons(int.Parse(NoNullInput()));
         }
         public QuestionAnswerModel WriteGetQuestionAnswer(Controller currentController)

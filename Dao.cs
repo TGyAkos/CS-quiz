@@ -11,7 +11,7 @@ namespace Quiz
     {
         private static readonly string SELECT_ALL = "SELECT * FROM `answer_question`";
         private static readonly string COUNT_ALL = "SELECT COUNT(*) FROM `answer_question`";
-        private static readonly string INSERT_NEW_QUESTION_ANSWER = "INSERT INTO `answer_question` (`id`, `question`, `answer`) VALUES (NULL, ?question , ?answer, ?UUID)";
+        private static readonly string INSERT_NEW_QUESTION_ANSWER = "INSERT INTO `answer_question` (`id`, `question`, `answer`, `uuid`) VALUES (NULL, ?question , ?answer, ?UUID)";
         private static readonly string CREATE_RELEVANT_TABLES = @"
                 CREATE TABLE IF NOT EXISTS `answer_question`(
                 id INT NOT NULL AUTO_INCREMENT,

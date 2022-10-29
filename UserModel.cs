@@ -16,9 +16,15 @@ namespace Quiz
             UserName = userName;
             Password = password;
         }
+        internal UserModel(string userName, string password, string uuid)
+        {
+            UUID = uuid;
+            UserName = userName;
+            Password = password;
+        }
         public override string ToString()
         {
-            return base.ToString();
+            return string.Format("UserModel: {0} {1} {2}", UUID, UserName, Password);
         }
     }
 }
