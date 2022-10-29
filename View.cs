@@ -17,39 +17,139 @@ namespace Quiz
         {
             while (true)
             {
-                string[] options = { "Play", "Add More Questions", "Exit" };
+                string[] options = { "Play", "Login", "Register", "Exit" };
                 WriteAllOptions(options);
                 WriteLine("Enter the desired number");
-                switch (NoNullInput())
+                switch (IntNoNullInput())
                 {
-                    case "1":
+                    case 1:
                         DrawScoreAllQuestionAnswer();
                         break;
-                    case "2":
-                        AddNewQuestionAnswer();
+                    case 2:
+                        AfterLoginOrRegister(Login());
                         break;
-                    case "3":
+                    case 3:
+                        AfterLoginOrRegister(Register());
+                        break;
+                    case 4:
                         Environment.Exit(1);
                         break;
                     default:
                         break;
                 }
-
             }
         }
-        public void AddNewQuestionAnswer()
+        public void AfterLoginOrRegister(UserModel currentUserModel)
+        {
+            if (currentUserModel == null) { return; }
+
+            while (true) 
+            {
+                string[] options = { "Play", "Add a new question", "Delete a question", "Logout" };
+                WriteAllOptions(options);
+                WriteLine("Enter the desired number");
+                switch (IntNoNullInput())
+                {
+                    case 1:
+                        DrawScoreAllQuestionAnswer();
+                        break;
+                    case 2:
+                        AddNewQuestionAnswer(currentUserModel);
+                        break;
+                    case 3:
+                        DeleteQuestionById();
+                        break;
+                    case 4:
+                        return;
+                        //Environment.Exit(1);
+                    default:
+                        break;
+                }
+            }
+        }
+        public UserModel Login()
+        {
+            UserController userController = new();
+
+            WriteLine("Username: ");
+            string newUserName = StringNoNullInput();
+            WriteLine("Password: ");
+            string newPassword = StringNoNullInput();
+
+            UserModel currentUserModel = new(newUserName, newPassword);
+
+            return CheckLoginDetails(currentUserModel, userController);
+
+        }
+        public UserModel CheckLoginDetails(UserModel currentUserModel, UserController userController)
+        {
+            UserModel returnUserModel = userController.ContSelectUserByLogin(currentUserModel);
+            if (returnUserModel == null) { LoginNotFound(); return null; }
+            return returnUserModel;
+        }
+        //I don't know how to do this better
+        public void LoginNotFound()
+        {
+            // Implement remaning tries
+            WriteLine("Wrong username or password");
+        }
+        public UserModel Register()
+        {
+            UserController userController = new();
+
+            WriteLine("Username: ");
+            string newUserName = StringNoNullInput();
+            WriteLine("Password: ");
+            string newPassword = StringNoNullInput();
+            WriteLine("Password Again: ");
+            string newPasswordAgain = StringNoNullInput();
+
+            while (newPassword != newPasswordAgain)
+            {
+                WriteLine("Password Again: ");
+                newPasswordAgain = StringNoNullInput();
+            }
+
+            UserModel newUsermodel = new(newUserName, newPassword);
+            UserModel AddedUserModel = null;
+            try
+            {
+                AddedUserModel = userController.AddReturnNewUser(newUsermodel);
+                WriteLine("Successfully registered");
+            }
+            catch (Exception ex)
+            {
+                WriteLine(ex.ToString());
+            }
+            return AddedUserModel;
+        }
+        public void AddNewQuestionAnswer(UserModel currentUserModel)
         {
             WriteLine("Question: ");
-            string newQuestion = NoNullInput();
+            string newQuestion = StringNoNullInput();
             WriteLine("Answer: ");
-            string newAnswer = NoNullInput();
-            if (cont.NewQuestionAnswer(newQuestion, newAnswer) == 0)
+            string newAnswer = StringNoNullInput();
+            if (cont.NewQuestionAnswer(newQuestion, newAnswer, currentUserModel) == 0)
             {
                 WriteLine("Succesfully added new question");
             }
             else
             {
                 WriteLine("Failed to add new question");
+            }
+        }
+        //This isn't as secure as i wanted it to be, because it isn't saved who deleted it
+        public void DeleteQuestionById()
+        {
+            WriteLine("Question id: ");
+            string question = StringNoNullInput();
+            if (cont.DeleteQuestionAnswerById(question) == 1) 
+            {
+                WriteLine("Succesfully deleted");
+            }
+            else
+            {
+                WriteLine("Failed to delete");
             }
         }
         public void DrawScoreAllQuestionAnswer()
@@ -66,8 +166,8 @@ namespace Quiz
         }
         public void WriteSetNumberOfQuestions(Controller currentController)
         {
-            WriteLine("Number of questions");
-            currentController.SetNumberOfQuesitons(int.Parse(NoNullInput()));
+            WriteLine("Number of questions: " + currentController.GetNumberOfQuestions());
+            currentController.SetNumberOfQuesitons(IntNoNullInput()); //int.parse could also be used
         }
         public QuestionAnswerModel WriteGetQuestionAnswer(Controller currentController)
         {
@@ -75,10 +175,20 @@ namespace Quiz
 
             WriteLine(string.Format("Question: {0}", answerModel.Question));
 
-            answerModel.UserAnswer = NoNullInput();
+            answerModel.UserAnswer = StringNoNullInput();
             return answerModel;
         }
-        public string NoNullInput()
+        public int IntNoNullInput()
+        {
+            string input = ReadLine();
+            while (string.IsNullOrEmpty(input) || !int.TryParse(input, out _))
+            {
+                WriteLine("Please enter a number: ");
+                input = ReadLine();
+            }
+            return Convert.ToInt32(input);
+        }
+        public string StringNoNullInput()
         {
             string input = ReadLine();
             while (string.IsNullOrEmpty(input))

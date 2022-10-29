@@ -11,21 +11,23 @@ namespace Quiz
     {
         private static readonly string SELECT_ALL = "SELECT * FROM `answer_question`";
         private static readonly string COUNT_ALL = "SELECT COUNT(*) FROM `answer_question`";
-        private static readonly string INSERT_NEW_QUESTION_ANSWER = "INSERT INTO `answer_question` (`id`, `question`, `answer`) VALUES (NULL, ?question , ?answer)";
+        private static readonly string INSERT_NEW_QUESTION_ANSWER = "INSERT INTO `answer_question` (`uuid`, `question`, `answer` ) VALUES (?UUID, ?question , ?answer)";
+        private static readonly string DELETE_QUESTION_BY_ID = "DELETE FROM `answer_question` WHERE question = ?question";
         private static readonly string CREATE_RELEVANT_TABLES = @"
                 CREATE TABLE IF NOT EXISTS `answer_question`(
-                id INT NOT NULL AUTO_INCREMENT,
+                uuid VARCHAR(36) NOT NULL,
                 question VARCHAR(250) NOT NULL,
                 answer VARCHAR(50) NOT NULL,
-                PRIMARY KEY (id)
+                PRIMARY KEY (uuid)
                 )";
 
         public Dao() { MySqlConnection conn = Connection.CreateConnection(); CreateRelevantTables(conn); }
 
         public QuestionAnswerModel[] AllQuestionAnswers()
         {
-            MySqlConnection conn = Connection.CreateConnection();
             //needs to be here otherwise the Sql connection is bound
+            MySqlConnection conn = Connection.CreateConnection();
+
             Console.WriteLine(GetAllRows(conn));
             QuestionAnswerModel[] a = new QuestionAnswerModel[GetAllRows(conn)];
 
@@ -33,12 +35,13 @@ namespace Quiz
 
             //https://stackoverflow.com/questions/30600370/why-is-datareader-giving-enumeration-yielded-no-results
 
+            int counter = 0;
             while (rdr.Read())
             {
                 QuestionAnswerModel ModelFromDataBase = new(rdr.GetValue(1).ToString(), rdr.GetValue(2).ToString());
                 Console.WriteLine(ModelFromDataBase.ToString());
-                int b = Convert.ToInt32(rdr.GetValue(0)) - 1;
-                a[b] = ModelFromDataBase;
+                a[counter] = ModelFromDataBase;
+                counter++;
             }
 
             rdr.Close();
@@ -54,7 +57,7 @@ namespace Quiz
                 //Console.WriteLine("AllRows: " + AllRows);
             }
             catch (Exception ex)
-            { 
+            {
                 Console.WriteLine(ex.Message);
                 return 0;
             }
@@ -71,7 +74,7 @@ namespace Quiz
             MySqlCommand cmd = new(SqlString, conn);
             return cmd;
         }
-        public int InsertNewQuestionAnswer(QuestionAnswerModel newQuestionAnswerModel)
+        public int InsertNewQuestionAnswer(QuestionAnswerModel newQuestionAnswerModel, UserModel currentUserModel)
         {
             MySqlConnection conn = Connection.CreateConnection();
 
@@ -79,6 +82,7 @@ namespace Quiz
             {
                 MySqlCommand comm = conn.CreateCommand();
                 comm.CommandText = INSERT_NEW_QUESTION_ANSWER;
+                comm.Parameters.AddWithValue("?uuid", currentUserModel.UUID);
                 comm.Parameters.AddWithValue("?question", newQuestionAnswerModel.Question);
                 comm.Parameters.AddWithValue("?answer", newQuestionAnswerModel.Answer);
                 comm.ExecuteNonQuery();
@@ -88,6 +92,27 @@ namespace Quiz
                 Console.WriteLine(ex.Message);
                 return 1;
             }
+            Connection.CloseConnection(conn);
+            return 0;
+        }
+        //Should this be an obj parameter or is this good enough?
+        public int DeleteQuestionAnswerById(string question)
+        {
+            MySqlConnection conn = Connection.CreateConnection();
+            MySqlCommand comm = conn.CreateCommand();
+
+            try
+            {
+                comm.CommandText = DELETE_QUESTION_BY_ID;
+                comm.Parameters.AddWithValue("question", question);
+                comm.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return 1;
+            }
+
             Connection.CloseConnection(conn);
             return 0;
         }
