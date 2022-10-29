@@ -43,6 +43,7 @@ namespace Quiz
             if (string.IsNullOrEmpty(currentUserModel.UUID)) { return null; }
             return currentUserModel;
         }
+        //Cannot differentiate between upper and lower case FIX required
         public int CheckNewUserModel(UserModel newUserModel)
         {
             MySqlConnection conn = Connection.CreateConnection();
@@ -67,7 +68,6 @@ namespace Quiz
             MySqlConnection conn = Connection.CreateConnection();
             MySqlCommand comm = conn.CreateCommand();
             
-
             try
             {
                 comm.CommandText = ADD_USER;

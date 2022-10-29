@@ -20,18 +20,18 @@ namespace Quiz
                 string[] options = { "Play", "Login", "Register", "Exit" };
                 WriteAllOptions(options);
                 WriteLine("Enter the desired number");
-                switch (NoNullInput())
+                switch (IntNoNullInput())
                 {
-                    case "1":
+                    case 1:
                         DrawScoreAllQuestionAnswer();
                         break;
-                    case "2":
+                    case 2:
                         AfterLoginOrRegister(Login());
                         break;
-                    case "3":
+                    case 3:
                         AfterLoginOrRegister(Register());
                         break;
-                    case "4":
+                    case 4:
                         Environment.Exit(1);
                         break;
                     default:
@@ -45,18 +45,21 @@ namespace Quiz
 
             while (true) 
             {
-                string[] options = { "Play", "Add new question", "Logout" };
+                string[] options = { "Play", "Add a new question", "Delete a question", "Logout" };
                 WriteAllOptions(options);
                 WriteLine("Enter the desired number");
-                switch (NoNullInput())
+                switch (IntNoNullInput())
                 {
-                    case "1":
+                    case 1:
                         DrawScoreAllQuestionAnswer();
                         break;
-                    case "2":
+                    case 2:
                         AddNewQuestionAnswer(currentUserModel);
                         break;
-                    case "3":
+                    case 3:
+                        DeleteQuestionById();
+                        break;
+                    case 4:
                         return;
                         //Environment.Exit(1);
                     default:
@@ -69,9 +72,9 @@ namespace Quiz
             UserController userController = new();
 
             WriteLine("Username: ");
-            string newUserName = NoNullInput();
+            string newUserName = StringNoNullInput();
             WriteLine("Password: ");
-            string newPassword = NoNullInput();
+            string newPassword = StringNoNullInput();
 
             UserModel currentUserModel = new(newUserName, newPassword);
 
@@ -95,16 +98,16 @@ namespace Quiz
             UserController userController = new();
 
             WriteLine("Username: ");
-            string newUserName = NoNullInput();
+            string newUserName = StringNoNullInput();
             WriteLine("Password: ");
-            string newPassword = NoNullInput();
+            string newPassword = StringNoNullInput();
             WriteLine("Password Again: ");
-            string newPasswordAgain = NoNullInput();
+            string newPasswordAgain = StringNoNullInput();
 
             while (newPassword != newPasswordAgain)
             {
                 WriteLine("Password Again: ");
-                newPasswordAgain = NoNullInput();
+                newPasswordAgain = StringNoNullInput();
             }
 
             UserModel newUsermodel = new(newUserName, newPassword);
@@ -123,9 +126,9 @@ namespace Quiz
         public void AddNewQuestionAnswer(UserModel currentUserModel)
         {
             WriteLine("Question: ");
-            string newQuestion = NoNullInput();
+            string newQuestion = StringNoNullInput();
             WriteLine("Answer: ");
-            string newAnswer = NoNullInput();
+            string newAnswer = StringNoNullInput();
             if (cont.NewQuestionAnswer(newQuestion, newAnswer, currentUserModel) == 0)
             {
                 WriteLine("Succesfully added new question");
@@ -133,6 +136,20 @@ namespace Quiz
             else
             {
                 WriteLine("Failed to add new question");
+            }
+        }
+        //This isn't as secure as i wanted it to be, because it isn't saved who deleted it
+        public void DeleteQuestionById()
+        {
+            WriteLine("Question id: ");
+            string question = StringNoNullInput();
+            if (cont.DeleteQuestionAnswerById(question) == 1) 
+            {
+                WriteLine("Succesfully deleted");
+            }
+            else
+            {
+                WriteLine("Failed to delete");
             }
         }
         public void DrawScoreAllQuestionAnswer()
@@ -150,7 +167,7 @@ namespace Quiz
         public void WriteSetNumberOfQuestions(Controller currentController)
         {
             WriteLine("Number of questions: " + currentController.GetNumberOfQuestions());
-            currentController.SetNumberOfQuesitons(int.Parse(NoNullInput()));
+            currentController.SetNumberOfQuesitons(IntNoNullInput()); //int.parse could also be used
         }
         public QuestionAnswerModel WriteGetQuestionAnswer(Controller currentController)
         {
@@ -158,10 +175,20 @@ namespace Quiz
 
             WriteLine(string.Format("Question: {0}", answerModel.Question));
 
-            answerModel.UserAnswer = NoNullInput();
+            answerModel.UserAnswer = StringNoNullInput();
             return answerModel;
         }
-        public string NoNullInput()
+        public int IntNoNullInput()
+        {
+            string input = ReadLine();
+            while (string.IsNullOrEmpty(input) || !int.TryParse(input, out _))
+            {
+                WriteLine("Please enter a number: ");
+                input = ReadLine();
+            }
+            return Convert.ToInt32(input);
+        }
+        public string StringNoNullInput()
         {
             string input = ReadLine();
             while (string.IsNullOrEmpty(input))

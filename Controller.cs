@@ -1,12 +1,4 @@
-﻿using Org.BouncyCastle.Asn1.Cmp;
-using Org.BouncyCastle.Asn1.X500;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Quiz
+﻿namespace Quiz
 {
     internal class Controller
     {
@@ -18,7 +10,8 @@ namespace Quiz
         private int NumberOfQuestions;
         private int ModelCounter;
 
-        public Controller() {
+        public Controller()
+        {
             dao = new();
             rnd = new();
             scr = new();
@@ -77,5 +70,6 @@ namespace Quiz
                 return 1;
             }
         }
+        public int DeleteQuestionAnswerById(string question) => dao.DeleteQuestionAnswerById(question);
     }
 }

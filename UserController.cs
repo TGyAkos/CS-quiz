@@ -34,7 +34,7 @@ namespace Quiz
         }
         public string HashPassword(string password)
         {
-            //this sure is a piece of shit but i don't care enough to fix it, it should do just fine
+            //this sure is a piece of shit but i don't know how to fix it
             SHA512 sHA512 = SHA512.Create();
             sHA512.ComputeHash(Encoding.UTF8.GetBytes(password));
             return BitConverter.ToString(sHA512.Hash).Replace("-", "");
