@@ -7,16 +7,16 @@ namespace Quiz
     {
         static void Main(string[] args)
         {
-            /*Dao dao = new();
-            Model[] a = dao.AllQuestionAnswers();
+            /*Dao dao = new Dao();
+            QuestionAnswerModel[] a = dao.AllQuestionAnswers();
             Console.WriteLine(a);
             Console.WriteLine("Hello World!");
-            Controller cont = new();
+            Controller cont = new Controller();
             Console.WriteLine(cont.RandomQuestionAnswer());
             cont.RightScore(1);
-            Console.WriteLine(cont.RightScore());*/
-            //Console.WriteLine(!int.TryParse(null, out _));
-            View vw = new();
+            Console.WriteLine(cont.RightScore());
+            //Console.WriteLine(!int.TryParse(null, out _));*/
+            View vw = new View();
             vw.DrawUi();
         }
     }
